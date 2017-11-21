@@ -12,6 +12,7 @@ from operator import itemgetter
 
 import first
 import thinkstats2
+import IPython
 
 
 def Mode(hist):
@@ -21,7 +22,8 @@ def Mode(hist):
 
     returns: value from Hist
     """
-    return 0
+    x, _ = max(hist.Items(), key=itemgetter(1))
+    return x
 
 
 def AllModes(hist):
@@ -31,7 +33,19 @@ def AllModes(hist):
 
     returns: iterator of value-freq pairs
     """
-    return []
+    return sorted(hist.Items(), key=itemgetter(1), reverse=True)
+
+
+def WeightDifference(firsts, others):
+    print('Mean')
+    print('firsts:', firsts.totalwgt_lb.mean())
+    print('others:', others.totalwgt_lb.mean())
+
+    print('Stdev')
+    print('firsts:', firsts.totalwgt_lb.std())
+    print('others:', others.totalwgt_lb.std())
+
+    print("Cohen's d:", thinkstats2.CohenEffectSize(firsts.totalwgt_lb, others.totalwgt_lb))
 
 
 def main(script):
@@ -42,7 +56,7 @@ def main(script):
     live, firsts, others = first.MakeFrames()
     hist = thinkstats2.Hist(live.prglngth)
 
-    # test Mode    
+    # test Mode
     mode = Mode(hist)
     print('Mode of preg length', mode)
     assert mode == 39, mode
@@ -56,6 +70,7 @@ def main(script):
 
     print('%s: All tests passed.' % script)
 
+    WeightDifference(firsts, others)
 
 if __name__ == '__main__':
     main(*sys.argv)
